@@ -1,0 +1,118 @@
+#include <iostream>
+#include <stack>
+using namespace std;
+	struct Treenode {
+		Treenode* left;
+		Treenode* right;
+		int data;
+		Treenode(int data_, Treenode* left_, Treenode* right_):data(data_), left(left_), right(right_) {};
+	};
+	
+	void inorder(Treenode* root) {			//inorder with recursive way
+		if (!root) return;
+		inorder(root->left);
+		if (!root->left && !root->right) cout << root->data;
+		inorder(root->right);
+	}
+
+	void inorder_iter(Treenode* root) {    //inorder with iterative way
+		stack<Treenode*> way;
+		Treenode* temp = new Treenode(NULL,NULL,NULL);
+		temp = root;
+		while (1) {
+			while (temp) {
+				cout << temp->data << endl;
+				way.push(temp);
+				temp = temp->left;
+			}
+			if (way.empty()) {
+				return;
+			}
+			else {
+				temp = way.top();
+				way.pop();
+				temp = temp->right;
+			}
+		}
+	}
+	void postorder(Treenode* root) {	// postorder  with recursive way
+		if (!root) return;
+		postorder(root->left);
+		postorder(root->right);
+		cout << root->data;
+	}
+	void postorder_iter(Treenode* root) { // postorder  with iterative way
+		Treenode* v = root;
+		if (!v) return;
+		stack<Treenode*> s;
+		do {
+			while (v) {
+				if (v->right)
+					s.push(v->right);
+				s.push(v);
+				v = v->left;
+			}
+			v = s.top();
+			s.pop();
+			if (!s.empty() && v->right && s.top() == v->right) {
+				s.pop();
+				s.push(v);
+				v = v->right;
+			}
+			else {
+				cout << v->data;
+				v = 0;
+			}
+		} while (!s.empty());
+	}
+
+	/* 3 Depth First Search preorder traversal */
+	int height_pre(Treenode* root)
+	{
+		if (!root) return 0;
+		unsigned int h = 0;
+		stack<Treenode*> wq, path;
+		wq.push(root);
+		while (!wq.empty()) {
+			root = wq.top();
+			if (!path.empty() && root == path.top()) {
+				if (path.size() > h)
+					h = path.size();
+				path.pop();
+				wq.pop();
+			}
+			else {
+				path.push(root);
+				if (root->right) wq.push(root->right);
+				if (root->left) wq.push(root->left);
+			}
+		}
+		return h;
+	}
+	int cnt_iter(Treenode* root) {
+		Treenode* v = root;
+		stack<Treenode*> s;
+		int cnt = 0;
+		while (1)
+			if (v) {
+				if (v->left && v->right) cnt++;
+				if (v->right)
+					s.push(v->right);
+				v = v->left;
+			}
+			else {
+				if (s.empty()) return cnt;
+				v = s.top();
+				s.pop();
+			}
+	}
+int main() {
+
+	Treenode* d = new Treenode(4, NULL, NULL);
+	Treenode* e = new Treenode(5,NULL, NULL);
+	Treenode* g = new Treenode(6,NULL,NULL);
+	Treenode* b = new Treenode(2,d,e);
+	Treenode* c = new Treenode(3,NULL,g);
+	Treenode* a = new Treenode(1,b,c);
+	
+}
